@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, inject } from 'vue';
+import { ref, onMounted, onUnmounted, inject, watch } from 'vue';
 import { useQuasar } from 'quasar';
 import TreeNode from '../components/TreeNode.vue';
 import type { ProjectNode, CellType } from '../components/models';
@@ -52,6 +52,28 @@ const $q = useQuasar();
 const projectNode = ref<any>(null);
 const isGenerating = ref(false);
 const generatingNodeId = ref<string | null>(null);
+
+// Load saved project from localStorage
+const loadProject = () => {
+  const savedProject = localStorage.getItem('ai-project-tree');
+  if (savedProject) {
+    try {
+      projectNode.value = JSON.parse(savedProject);
+    } catch (error) {
+      console.error('Error loading saved project:', error);
+      projectNode.value = null;
+    }
+  }
+};
+
+// Save project to localStorage
+const saveProject = () => {
+  if (projectNode.value) {
+    localStorage.setItem('ai-project-tree', JSON.stringify(projectNode.value));
+  } else {
+    localStorage.removeItem('ai-project-tree');
+  }
+};
 
 // Inject API configuration from parent
 const apiKey = inject<{ value: string }>('apiKey');
@@ -73,6 +95,15 @@ const createProject = () => {
     timestamp: Date.now(),
   };
 };
+
+// Watch for changes in projectNode and save to localStorage
+watch(
+  projectNode,
+  () => {
+    saveProject();
+  },
+  { deep: true },
+);
 
 // Update a node
 const handleNodeUpdate = (updatedNode: ProjectNode) => {
@@ -289,6 +320,9 @@ const handleClearAllCells = () => {
 };
 
 onMounted(() => {
+  // Load saved project
+  loadProject();
+
   // Listen for events from the sidebar
   window.addEventListener('addNewCell', handleAddNewCell);
   window.addEventListener('clearAllCells', handleClearAllCells);
