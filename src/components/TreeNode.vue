@@ -4,6 +4,21 @@
       <!-- Node Header -->
       <div class="node-header">
         <div class="node-info">
+          <!-- Collapse/Expand Button -->
+          <q-btn
+            v-if="nodeChildren && nodeChildren.length > 0"
+            flat
+            round
+            :icon="isCollapsed ? 'expand_more' : 'expand_less'"
+            size="sm"
+            color="grey-6"
+            @click="toggleCollapse"
+            class="q-mr-xs"
+          >
+            <q-tooltip
+              >{{ isCollapsed ? 'Expand' : 'Collapse' }} {{ getChildrenLabel() }}</q-tooltip
+            >
+          </q-btn>
           <!-- Drag Handle -->
           <q-icon
             v-if="!isRoot"
@@ -65,6 +80,17 @@
             </q-tooltip>
           </q-btn>
           <q-btn
+            v-if="!isEditing"
+            flat
+            round
+            icon="download"
+            size="sm"
+            color="info"
+            @click="exportNode"
+          >
+            <q-tooltip>Export {{ getNodeTypeLabel(node.type) }} as JSON</q-tooltip>
+          </q-btn>
+          <q-btn
             v-if="!isEditing && !isRoot"
             flat
             round
@@ -90,6 +116,7 @@
           ></div>
           <div v-if="nodeChildren && nodeChildren.length > 0" class="children-count">
             {{ nodeChildren.length }} {{ getChildrenLabel() }}
+            <span v-if="isCollapsed" class="collapsed-indicator">(collapsed)</span>
           </div>
         </div>
 
@@ -119,7 +146,7 @@
 
     <!-- Children -->
     <div v-if="nodeChildren && nodeChildren.length > 0" class="children-container">
-      <div class="children-indent">
+      <div class="children-indent" :class="{ collapsed: isCollapsed }">
         <!-- Debug info -->
         <div v-if="!isRoot" style="font-size: 12px; color: #666; margin-bottom: 8px">
           Children: {{ nodeChildren.length }} | Draggable: {{ !isRoot }}
@@ -184,9 +211,16 @@ const isEditing = ref(false);
 const editTitle = ref('');
 const editDescription = ref('');
 const descriptionContainer = ref<HTMLElement | null>(null);
+// Load collapsed state from localStorage or default to false
+const isCollapsed = ref(false);
 
 // Quasar instance for dialogs
 const $q = useQuasar();
+
+// Save collapsed state when it changes
+watch(isCollapsed, (newValue) => {
+  localStorage.setItem(`node-collapsed-${props.node.id}`, JSON.stringify(newValue));
+});
 
 // Computed property for node children with getter and setter
 const nodeChildren = computed({
@@ -338,6 +372,12 @@ const renderMermaidDiagrams = async (container: HTMLElement) => {
 
 // Render Mermaid diagrams when component mounts or description changes
 onMounted(async () => {
+  // Load collapsed state
+  const savedState = localStorage.getItem(`node-collapsed-${props.node.id}`);
+  if (savedState !== null) {
+    isCollapsed.value = JSON.parse(savedState);
+  }
+
   await nextTick();
   if (descriptionContainer.value) {
     await renderMermaidDiagrams(descriptionContainer.value);
@@ -385,6 +425,59 @@ const addChild = () => {
 
 const generateChildren = () => {
   emit('generate', props.node);
+};
+
+const toggleCollapse = () => {
+  isCollapsed.value = !isCollapsed.value;
+};
+
+const exportNode = () => {
+  try {
+    // Create a clean copy of the node for export
+    const nodeToExport = {
+      ...props.node,
+      exportedAt: new Date().toISOString(),
+      exportedBy: 'AI Project Task Generator',
+      version: '1.0.0',
+    };
+
+    // Convert to JSON with pretty formatting
+    const jsonString = JSON.stringify(nodeToExport, null, 2);
+
+    // Create a blob and download
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // Create a temporary download link
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${props.node.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_${props.node.type}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Clean up the URL
+    URL.revokeObjectURL(url);
+
+    // Show success notification
+    $q.notify({
+      type: 'positive',
+      message: `"${props.node.title}" exported successfully`,
+      icon: 'download',
+      position: 'top',
+      timeout: 3000,
+    });
+  } catch (error) {
+    console.error('Export error:', error);
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to export node',
+      caption: error instanceof Error ? error.message : 'Unknown error',
+      icon: 'error',
+      position: 'top',
+      timeout: 5000,
+    });
+  }
 };
 
 const deleteNode = () => {
@@ -630,6 +723,12 @@ const getNextChildType = (parentType: string): CellType => {
   font-style: italic;
 }
 
+.collapsed-indicator {
+  color: #666;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
 .node-edit {
   margin-top: 8px;
 }
@@ -648,6 +747,16 @@ const getNextChildType = (parentType: string): CellType => {
   margin-left: 24px;
   border-left: 2px solid #e0e0e0;
   padding-left: 16px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.children-indent.collapsed {
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
 }
 
 /* Responsive adjustments */
