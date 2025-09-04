@@ -4,6 +4,15 @@
       <!-- Node Header -->
       <div class="node-header">
         <div class="node-info">
+          <!-- Drag Handle -->
+          <q-icon
+            v-if="!isRoot"
+            name="drag_indicator"
+            class="drag-handle q-mr-sm"
+            size="sm"
+            color="grey-6"
+            style="cursor: grab; user-select: none"
+          />
           <q-chip
             :color="getNodeTypeColor(node.type)"
             text-color="white"
@@ -76,8 +85,8 @@
           <div v-if="node.description" class="node-description">
             {{ node.description }}
           </div>
-          <div v-if="node.children && node.children.length > 0" class="children-count">
-            {{ node.children.length }} {{ getChildrenLabel() }}
+          <div v-if="nodeChildren && nodeChildren.length > 0" class="children-count">
+            {{ nodeChildren.length }} {{ getChildrenLabel() }}
           </div>
         </div>
 
@@ -106,20 +115,34 @@
     </div>
 
     <!-- Children -->
-    <div v-if="node.children && node.children.length > 0" class="children-container">
+    <div v-if="nodeChildren && nodeChildren.length > 0" class="children-container">
       <div class="children-indent">
-        <TreeNode
-          v-for="child in node.children"
-          :key="child.id"
-          :node="child"
-          :is-root="false"
-          :is-generating="isGenerating"
-          :generating-node-id="generatingNodeId"
-          @update="handleChildUpdate"
-          @delete="handleChildDelete"
-          @generate="handleChildGenerate"
-          @add-child="handleAddChild"
-        />
+        <!-- Debug info -->
+        <div v-if="!isRoot" style="font-size: 12px; color: #666; margin-bottom: 8px">
+          Children: {{ nodeChildren.length }} | Draggable: {{ !isRoot }}
+        </div>
+        <draggable
+          v-model="nodeChildren"
+          @start="handleDragStart"
+          @end="handleDragEnd"
+          @change="handleDragChange"
+          item-key="id"
+        >
+          <template #item="{ element: child }">
+            <TreeNode
+              :key="child.id"
+              :node="child"
+              :is-root="false"
+              :is-generating="isGenerating"
+              :generating-node-id="generatingNodeId"
+              @update="handleChildUpdate"
+              @delete="handleChildDelete"
+              @generate="handleChildGenerate"
+              @add-child="handleAddChild"
+              @reorder="handleChildReorder"
+            />
+          </template>
+        </draggable>
       </div>
     </div>
   </div>
@@ -127,6 +150,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import draggable from 'vuedraggable';
 import type { ProjectNode, CellType } from './models';
 
 interface Props {
@@ -147,11 +171,24 @@ const emit = defineEmits<{
   delete: [nodeId: string];
   generate: [node: ProjectNode];
   'add-child': [parentNode: ProjectNode, type: CellType];
+  reorder: [node: ProjectNode];
 }>();
 
 const isEditing = ref(false);
 const editTitle = ref('');
 const editDescription = ref('');
+
+// Computed property for node children with getter and setter
+const nodeChildren = computed({
+  get: () => props.node.children || [],
+  set: (newChildren) => {
+    const updatedNode = {
+      ...props.node,
+      children: newChildren,
+    };
+    emit('update', updatedNode);
+  },
+});
 
 // Computed properties
 const canGenerate = computed(() => {
@@ -292,6 +329,27 @@ const handleAddChild = (parentNode: ProjectNode, type: CellType) => {
   emit('add-child', parentNode, type);
 };
 
+const handleDragStart = (event: any) => {
+  console.log('🎯 Drag started', event);
+  console.log('Node children:', nodeChildren.value);
+};
+
+const handleDragEnd = (event: any) => {
+  // The reordering is already handled by the computed property setter
+  // This function can be used for additional logic if needed
+  console.log('✅ Drag operation completed', event);
+  console.log('Updated node children:', nodeChildren.value);
+};
+
+const handleDragChange = (event: any) => {
+  console.log('🔄 Drag change', event);
+};
+
+const handleChildReorder = (childNode: ProjectNode) => {
+  // Propagate reorder event up the tree
+  emit('reorder', childNode);
+};
+
 // Helper function to determine next child type
 const getNextChildType = (parentType: string): CellType => {
   const typeMap: Record<string, CellType> = {
@@ -401,5 +459,45 @@ const getNextChildType = (parentType: string): CellType => {
     margin-left: 16px;
     padding-left: 12px;
   }
+}
+
+/* Drag and Drop Styles */
+.drag-handle {
+  cursor: grab !important;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.drag-handle:hover {
+  opacity: 1;
+  color: #1976d2 !important;
+}
+
+.drag-handle:active {
+  cursor: grabbing !important;
+}
+
+.tree-node {
+  transition: transform 0.2s;
+}
+
+.tree-node:hover {
+  transform: translateY(-1px);
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #f5f5f5;
+  border: 2px dashed #ccc;
+}
+
+.chosen {
+  background: #e3f2fd;
+  border: 2px solid #2196f3;
+}
+
+.drag {
+  transform: rotate(5deg);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 </style>

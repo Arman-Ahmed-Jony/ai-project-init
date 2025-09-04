@@ -30,6 +30,7 @@
           @delete="handleNodeDelete"
           @generate="handleNodeGenerate"
           @add-child="handleAddChild"
+          @reorder="handleNodeReorder"
         />
       </div>
     </div>
@@ -89,6 +90,13 @@ const handleNodeDelete = (nodeId: string) => {
   } else if (projectNode.value) {
     deleteNodeFromTree(projectNode.value, nodeId);
   }
+};
+
+// Handle node reordering
+const handleNodeReorder = (reorderedNode: ProjectNode) => {
+  // The reorder is already handled by the v-model in draggable
+  // This function can be used for additional logic if needed
+  console.log('Node reordered:', reorderedNode.title);
 };
 
 // Generate children for a node
