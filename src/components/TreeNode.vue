@@ -280,7 +280,7 @@ const getAddChildLabel = (): string => {
 const mermaidPlugin = (md: MarkdownIt) => {
   const defaultRender =
     md.renderer.rules.fence ||
-    function (tokens, idx, options, env, renderer) {
+    function () {
       return '';
     };
 
@@ -444,19 +444,19 @@ const handleAddChild = (parentNode: ProjectNode, type: CellType) => {
   emit('add-child', parentNode, type);
 };
 
-const handleDragStart = (event: any) => {
+const handleDragStart = (event: Event) => {
   console.log('🎯 Drag started', event);
   console.log('Node children:', nodeChildren.value);
 };
 
-const handleDragEnd = (event: any) => {
+const handleDragEnd = (event: Event) => {
   // The reordering is already handled by the computed property setter
   // This function can be used for additional logic if needed
   console.log('✅ Drag operation completed', event);
   console.log('Updated node children:', nodeChildren.value);
 };
 
-const handleDragChange = (event: any) => {
+const handleDragChange = (event: Event) => {
   console.log('🔄 Drag change', event);
 };
 
