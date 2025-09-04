@@ -2,6 +2,12 @@
 
 A powerful project management tool that uses Google's Gemini AI to automatically generate comprehensive project breakdowns including epics, features, user stories, and tasks. Built with Quasar Framework and Vue 3, featuring Mermaid diagram generation, collapsible tree views, and persistent data management.
 
+## 🚀 Live Demo
+
+**Try it now**: [https://arman-ahmed-jony.github.io/ai-project-init/](https://arman-ahmed-jony.github.io/ai-project-init/)
+
+Experience the full power of AI-driven project management with interactive Mermaid diagrams, collapsible tree views, and real-time project generation.
+
 ## ✨ Key Features
 
 ### 🤖 AI-Powered Project Generation
@@ -87,6 +93,8 @@ Project
 4. **Open your browser** and navigate to `http://localhost:9000`
 
 ## ⚡ Quick Start
+
+**🌐 Try the Live Demo First**: [https://arman-ahmed-jony.github.io/ai-project-init/](https://arman-ahmed-jony.github.io/ai-project-init/)
 
 1. **Get API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey) to get your free Gemini API key
 2. **Configure**: Enter your API key in the sidebar and select a model
