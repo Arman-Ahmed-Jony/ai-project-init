@@ -294,6 +294,7 @@ For each task, provide:
 - Priority level (high/medium/low)
 - Estimated hours (1-16)
 - Status (pending)
+- **A Mermaid flowchart** showing the task workflow, dependencies, and decision points
 
 **Important**: Write the description in markdown format with proper formatting:
 - Use **bold** for key technical concepts and deliverables
@@ -303,11 +304,20 @@ For each task, provide:
 - Use > for important technical notes or considerations
 - Use numbered lists for step-by-step instructions
 
+**For the Mermaid flowchart**:
+- Include the flowchart in a markdown code block with \`\`\`mermaid
+- Show the main workflow steps as nodes
+- Use decision points with diamond shapes
+- Show dependencies between steps
+- Include start and end points
+- Use clear, descriptive node labels
+- Keep it focused on the specific task workflow
+
 Format your response as a JSON array with this structure:
 [
   {
     "title": "Task Title",
-    "description": "## Task Overview\n\n**Objective**: What needs to be accomplished\n\n## Technical Approach\n\nBrief explanation of the technical approach.\n\n## Implementation Steps\n\n1. **Step 1**: Detailed description\n2. **Step 2**: Detailed description\n3. **Step 3**: Detailed description\n\n## Deliverables\n\n- Deliverable 1\n- Deliverable 2\n\n> Technical considerations or notes",
+    "description": "## Task Overview\n\n**Objective**: What needs to be accomplished\n\n## Technical Approach\n\nBrief explanation of the technical approach.\n\n## Implementation Steps\n\n1. **Step 1**: Detailed description\n2. **Step 2**: Detailed description\n3. **Step 3**: Detailed description\n\n## Deliverables\n\n- Deliverable 1\n- Deliverable 2\n\n> Technical considerations or notes\n\n## Workflow Diagram\n\n\`\`\`mermaid\nflowchart TD\n    A[Start] --> B[Step 1]\n    B --> C{Decision Point}\n    C -->|Yes| D[Step 2A]\n    C -->|No| E[Step 2B]\n    D --> F[End]\n    E --> F\n\`\`\`",
     "priority": "high|medium|low",
     "estimatedHours": 8,
     "status": "pending"
