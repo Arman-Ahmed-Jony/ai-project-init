@@ -57,11 +57,15 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 
 const leftDrawerOpen = ref(true);
 
 const apiKey = ref('');
 const selectedModel = ref('gemini-2.0-flash');
+
+// Quasar instance for dialogs
+const $q = useQuasar();
 
 const modelOptions = [
   { label: 'Gemini 1.5 Flash', value: 'gemini-1.5-flash' },
@@ -75,7 +79,25 @@ const toggleLeftDrawer = () => {
 };
 
 const clearAllCells = () => {
-  window.dispatchEvent(new CustomEvent('clearAllCells'));
+  // Show Quasar confirmation dialog before clearing all data
+  $q.dialog({
+    title: 'Clear All Data',
+    message:
+      'Are you sure you want to clear all project data?\n\nThis will delete the entire project tree and cannot be undone.',
+    cancel: {
+      label: 'Cancel',
+      color: 'grey',
+      flat: true,
+    },
+    ok: {
+      label: 'Clear All',
+      color: 'negative',
+      flat: true,
+    },
+    persistent: true,
+  }).onOk(() => {
+    window.dispatchEvent(new CustomEvent('clearAllCells'));
+  });
 };
 
 // Provide API configuration to child components

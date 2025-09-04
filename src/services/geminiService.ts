@@ -54,7 +54,35 @@ class GeminiService {
       cleanResponse = cleanResponse.substring(jsonStart, jsonEnd);
     }
 
-    return cleanResponse.trim();
+    // Clean the response more carefully
+    try {
+      // First, try to parse as-is to see if it's already valid
+      JSON.parse(cleanResponse);
+      return cleanResponse.trim();
+    } catch (error) {
+      console.log('JSON parsing failed, attempting to clean...', error);
+
+      // If parsing fails, clean the response
+      cleanResponse = cleanResponse
+        // Remove problematic characters by filtering them out
+        .split('')
+        .filter((char) => {
+          const code = char.charCodeAt(0);
+          // Keep printable characters and common whitespace
+          return code >= 32 || code === 9 || code === 10 || code === 13;
+        })
+        .join('')
+        // Escape newlines, tabs, and carriage returns
+        .replace(/\n/g, '\\n')
+        .replace(/\r/g, '\\r')
+        .replace(/\t/g, '\\t')
+        // Escape backslashes
+        .replace(/\\/g, '\\\\')
+        // Fix quotes - this is a simplified approach
+        .replace(/([^\\])"/g, '$1\\"');
+
+      return cleanResponse.trim();
+    }
   }
 
   // Test method to verify API is working
@@ -78,15 +106,22 @@ Description: ${project.description}
 
 For each epic, provide:
 - A clear, actionable title
-- A detailed description of what the epic covers
+- A detailed description in **markdown format** that covers what the epic includes, key deliverables, and success criteria
 - Priority level (high/medium/low)
 - Estimated duration (e.g., "2-3 weeks", "1 month")
+
+**Important**: Write the description in markdown format with proper formatting:
+- Use **bold** for important terms
+- Use bullet points with - for key features
+- Use ## for subsections
+- Use \`code\` for technical terms
+- Use > for important notes or requirements
 
 Format your response as a JSON array with this structure:
 [
   {
     "title": "Epic Title",
-    "description": "Detailed description of what this epic covers",
+    "description": "## Overview\n\n**Detailed description** in markdown format with:\n- Key features\n- Deliverables\n- Success criteria\n\n> Important notes or requirements",
     "priority": "high|medium|low",
     "estimatedDuration": "X weeks/months"
   }
@@ -142,15 +177,22 @@ Description: ${epic.description}
 
 For each feature, provide:
 - A clear, specific title
-- A detailed description of what the feature does
+- A detailed description in **markdown format** explaining what the feature does, its functionality, and technical requirements
 - Priority level (high/medium/low)
 - Estimated effort (small/medium/large)
+
+**Important**: Write the description in markdown format with proper formatting:
+- Use **bold** for key functionality
+- Use bullet points with - for feature details
+- Use ## for subsections (e.g., ## Technical Requirements)
+- Use \`code\` for technical terms and APIs
+- Use > for important implementation notes
 
 Format your response as a JSON array with this structure:
 [
   {
     "title": "Feature Title",
-    "description": "Detailed description of what this feature does",
+    "description": "## Feature Overview\n\n**What it does**: Brief description\n\n**Key functionality**:\n- Feature detail 1\n- Feature detail 2\n\n## Technical Requirements\n- Requirement 1\n- Requirement 2\n\n> Implementation notes",
     "priority": "high|medium|low",
     "estimatedEffort": "small|medium|large"
   }
@@ -188,17 +230,27 @@ Description: ${feature.description}
 
 For each user story, provide:
 - A user story in the format "As a [user type], I want [functionality] so that [benefit]"
-- A detailed description
-- 3-5 acceptance criteria
+- A detailed description in **markdown format** explaining the user story, context, and business value
+- 3-5 acceptance criteria in markdown format
 - Priority level (high/medium/low)
 - Estimated story points (1-8)
+
+**Important**: Write the description and acceptance criteria in markdown format:
+- Use **bold** for key user actions and benefits
+- Use bullet points with - for acceptance criteria
+- Use ## for subsections (e.g., ## Context, ## Business Value)
+- Use \`code\` for specific functionality or technical terms
+- Use > for important notes or edge cases
 
 Format your response as a JSON array with this structure:
 [
   {
     "title": "As a user, I want to...",
-    "description": "Detailed description of the user story",
-    "acceptanceCriteria": ["Criteria 1", "Criteria 2", "Criteria 3"],
+    "description": "## Context\n\n**User need**: Brief explanation\n\n**Business value**: Why this matters\n\n## User Story Details\n\nDetailed explanation of what the user wants to accomplish and why.\n\n> Important notes or edge cases to consider",
+    "acceptanceCriteria": [
+      "**Given** a specific context, **when** the user performs an action, **then** a specific outcome occurs",
+      "**Given** another context, **when** the user does something, **then** another outcome happens"
+    ],
     "priority": "high|medium|low",
     "estimatedStoryPoints": 5
   }
@@ -208,7 +260,8 @@ Return only the JSON array, no additional text.`;
 
     try {
       const response = await this.generateContent(prompt);
-      const stories = JSON.parse(response);
+      const cleanResponse = this.cleanJsonResponse(response);
+      const stories = JSON.parse(cleanResponse);
 
       return stories.map((story: Record<string, unknown>, index: number) => ({
         id: `story_${Date.now()}_${index}`,
@@ -237,16 +290,24 @@ Acceptance Criteria: ${story.acceptanceCriteria?.join(', ') || 'N/A'}
 
 For each task, provide:
 - A clear, actionable title
-- A detailed description of what needs to be done
+- A detailed description in **markdown format** explaining what needs to be done, technical approach, and implementation details
 - Priority level (high/medium/low)
 - Estimated hours (1-16)
 - Status (pending)
+
+**Important**: Write the description in markdown format with proper formatting:
+- Use **bold** for key technical concepts and deliverables
+- Use bullet points with - for implementation steps
+- Use ## for subsections (e.g., ## Technical Approach, ## Implementation Steps)
+- Use \`code\` for specific code, APIs, or technical terms
+- Use > for important technical notes or considerations
+- Use numbered lists for step-by-step instructions
 
 Format your response as a JSON array with this structure:
 [
   {
     "title": "Task Title",
-    "description": "Detailed description of what needs to be done",
+    "description": "## Task Overview\n\n**Objective**: What needs to be accomplished\n\n## Technical Approach\n\nBrief explanation of the technical approach.\n\n## Implementation Steps\n\n1. **Step 1**: Detailed description\n2. **Step 2**: Detailed description\n3. **Step 3**: Detailed description\n\n## Deliverables\n\n- Deliverable 1\n- Deliverable 2\n\n> Technical considerations or notes",
     "priority": "high|medium|low",
     "estimatedHours": 8,
     "status": "pending"

@@ -82,9 +82,11 @@
       <div class="node-body">
         <!-- Display Mode -->
         <div v-if="!isEditing" class="node-display">
-          <div v-if="node.description" class="node-description">
-            {{ node.description }}
-          </div>
+          <div
+            v-if="node.description"
+            class="node-description"
+            v-html="renderMarkdown(node.description)"
+          ></div>
           <div v-if="nodeChildren && nodeChildren.length > 0" class="children-count">
             {{ nodeChildren.length }} {{ getChildrenLabel() }}
           </div>
@@ -151,6 +153,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import draggable from 'vuedraggable';
+import { marked } from 'marked';
+import { useQuasar } from 'quasar';
 import type { ProjectNode, CellType } from './models';
 
 interface Props {
@@ -177,6 +181,9 @@ const emit = defineEmits<{
 const isEditing = ref(false);
 const editTitle = ref('');
 const editDescription = ref('');
+
+// Quasar instance for dialogs
+const $q = useQuasar();
 
 // Computed property for node children with getter and setter
 const nodeChildren = computed({
@@ -266,6 +273,21 @@ const getAddChildLabel = (): string => {
   return labels[props.node.type as keyof typeof labels] || 'Item';
 };
 
+// Markdown rendering function
+const renderMarkdown = (text: string): string => {
+  if (!text) return '';
+  try {
+    const result = marked(text, {
+      breaks: true,
+      gfm: true,
+    });
+    return typeof result === 'string' ? result : '';
+  } catch (error) {
+    console.error('Markdown rendering error:', error);
+    return text; // Fallback to plain text
+  }
+};
+
 // Actions
 const startEditing = () => {
   isEditing.value = true;
@@ -299,7 +321,33 @@ const generateChildren = () => {
 };
 
 const deleteNode = () => {
-  emit('delete', props.node.id);
+  // Show Quasar confirmation dialog before deleting
+  $q.dialog({
+    title: 'Confirm Delete',
+    message: `Are you sure you want to delete "${props.node.title}"?\n\nThis action cannot be undone.`,
+    cancel: {
+      label: 'Cancel',
+      color: 'grey',
+      flat: true,
+    },
+    ok: {
+      label: 'Delete',
+      color: 'negative',
+      flat: true,
+    },
+    persistent: true,
+  }).onOk(() => {
+    emit('delete', props.node.id);
+
+    // Show success notification
+    $q.notify({
+      type: 'positive',
+      message: `"${props.node.title}" deleted successfully`,
+      icon: 'delete',
+      position: 'top',
+      timeout: 3000,
+    });
+  });
 };
 
 // Event handlers
@@ -415,6 +463,98 @@ const getNextChildType = (parentType: string): CellType => {
   color: #666;
   font-size: 14px;
   margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.node-description h1,
+.node-description h2,
+.node-description h3,
+.node-description h4,
+.node-description h5,
+.node-description h6 {
+  margin: 8px 0 4px 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.node-description h1 {
+  font-size: 18px;
+}
+.node-description h2 {
+  font-size: 16px;
+}
+.node-description h3 {
+  font-size: 15px;
+}
+.node-description h4 {
+  font-size: 14px;
+}
+.node-description h5 {
+  font-size: 13px;
+}
+.node-description h6 {
+  font-size: 12px;
+}
+
+.node-description p {
+  margin: 4px 0;
+}
+
+.node-description ul,
+.node-description ol {
+  margin: 4px 0;
+  padding-left: 20px;
+}
+
+.node-description li {
+  margin: 2px 0;
+}
+
+.node-description code {
+  background: #f5f5f5;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+}
+
+.node-description pre {
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 4px 0;
+}
+
+.node-description pre code {
+  background: none;
+  padding: 0;
+}
+
+.node-description blockquote {
+  border-left: 3px solid #ddd;
+  margin: 4px 0;
+  padding-left: 12px;
+  color: #777;
+  font-style: italic;
+}
+
+.node-description strong {
+  font-weight: 600;
+  color: #333;
+}
+
+.node-description em {
+  font-style: italic;
+}
+
+.node-description a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+.node-description a:hover {
+  text-decoration: underline;
 }
 
 .children-count {
