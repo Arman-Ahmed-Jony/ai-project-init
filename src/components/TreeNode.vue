@@ -84,6 +84,7 @@
         <div v-if="!isEditing" class="node-display">
           <div
             v-if="node.description"
+            ref="descriptionContainer"
             class="node-description"
             v-html="renderMarkdown(node.description)"
           ></div>
@@ -151,11 +152,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, nextTick, onMounted, watch } from 'vue';
 import draggable from 'vuedraggable';
-import { marked } from 'marked';
+import MarkdownIt from 'markdown-it';
 import { useQuasar } from 'quasar';
 import type { ProjectNode, CellType } from './models';
+import { mermaidService } from '../services/mermaidService';
 
 interface Props {
   node: ProjectNode;
@@ -181,6 +183,7 @@ const emit = defineEmits<{
 const isEditing = ref(false);
 const editTitle = ref('');
 const editDescription = ref('');
+const descriptionContainer = ref<HTMLElement | null>(null);
 
 // Quasar instance for dialogs
 const $q = useQuasar();
@@ -273,20 +276,84 @@ const getAddChildLabel = (): string => {
   return labels[props.node.type as keyof typeof labels] || 'Item';
 };
 
-// Markdown rendering function
+// Custom Mermaid plugin for markdown-it
+const mermaidPlugin = (md: MarkdownIt) => {
+  const defaultRender =
+    md.renderer.rules.fence ||
+    function (tokens, idx, options, env, renderer) {
+      return '';
+    };
+
+  md.renderer.rules.fence = function (tokens, idx, options, env, renderer) {
+    const token = tokens[idx];
+    if (!token) return defaultRender(tokens, idx, options, env, renderer);
+
+    const info = token.info ? md.utils.unescapeAll(token.info).trim() : '';
+    const langName = info ? info.split(/\s+/g)[0] : '';
+
+    if (langName === 'mermaid') {
+      const code = token.content.trim();
+      return `<div class="mermaid" data-mermaid="${encodeURIComponent(code)}">${code}</div>`;
+    }
+
+    return defaultRender(tokens, idx, options, env, renderer);
+  };
+};
+
+// Initialize markdown-it with custom Mermaid plugin
+const md = new MarkdownIt({
+  html: true,
+  breaks: true,
+  linkify: true,
+}).use(mermaidPlugin);
+
+// Markdown rendering function with Mermaid support
 const renderMarkdown = (text: string): string => {
   if (!text) return '';
   try {
-    const result = marked(text, {
-      breaks: true,
-      gfm: true,
-    });
-    return typeof result === 'string' ? result : '';
+    const result = md.render(text);
+    return result;
   } catch (error) {
     console.error('Markdown rendering error:', error);
     return text; // Fallback to plain text
   }
 };
+
+// Render Mermaid diagrams after markdown processing
+const renderMermaidDiagrams = async (container: HTMLElement) => {
+  const mermaidElements = container.querySelectorAll('.mermaid[data-mermaid]');
+
+  for (const element of mermaidElements) {
+    const definition = decodeURIComponent(element.getAttribute('data-mermaid') || '');
+    if (definition) {
+      try {
+        const svg = await mermaidService.renderDiagram(definition);
+        element.innerHTML = svg;
+      } catch (error) {
+        console.error('Error rendering Mermaid diagram:', error);
+      }
+    }
+  }
+};
+
+// Render Mermaid diagrams when component mounts or description changes
+onMounted(async () => {
+  await nextTick();
+  if (descriptionContainer.value) {
+    await renderMermaidDiagrams(descriptionContainer.value);
+  }
+});
+
+// Watch for changes in node description to re-render Mermaid diagrams
+watch(
+  () => props.node.description,
+  async () => {
+    await nextTick();
+    if (descriptionContainer.value) {
+      await renderMermaidDiagrams(descriptionContainer.value);
+    }
+  },
+);
 
 // Actions
 const startEditing = () => {
@@ -639,5 +706,20 @@ const getNextChildType = (parentType: string): CellType => {
 .drag {
   transform: rotate(5deg);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Mermaid Diagram Styles */
+.mermaid {
+  margin: 16px 0;
+  text-align: center;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
 }
 </style>

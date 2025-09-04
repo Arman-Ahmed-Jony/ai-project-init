@@ -64,22 +64,20 @@ class GeminiService {
 
       // If parsing fails, clean the response
       cleanResponse = cleanResponse
-        // Remove problematic characters by filtering them out
+        // Fix escaped newlines and other escape sequences
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '\r')
+        .replace(/\\t/g, '\t')
+        .replace(/\\\\/g, '\\')
+        .replace(/\\"/g, '"')
+        // Remove any remaining problematic characters
         .split('')
         .filter((char) => {
           const code = char.charCodeAt(0);
           // Keep printable characters and common whitespace
           return code >= 32 || code === 9 || code === 10 || code === 13;
         })
-        .join('')
-        // Escape newlines, tabs, and carriage returns
-        .replace(/\n/g, '\\n')
-        .replace(/\r/g, '\\r')
-        .replace(/\t/g, '\\t')
-        // Escape backslashes
-        .replace(/\\/g, '\\\\')
-        // Fix quotes - this is a simplified approach
-        .replace(/([^\\])"/g, '$1\\"');
+        .join('');
 
       return cleanResponse.trim();
     }
@@ -311,7 +309,10 @@ For each task, provide:
 - Show dependencies between steps
 - Include start and end points
 - Use clear, descriptive node labels
+- **IMPORTANT**: Wrap all node labels in double quotes if they contain special characters like parentheses, spaces, or symbols
+- Use simple node IDs (A, B, C, etc.) and put descriptions in quoted labels
 - Keep it focused on the specific task workflow
+- Example: A["Start Process"] --> B{"Check Condition"} instead of A[Start Process] --> B{Check Condition}
 
 Format your response as a JSON array with this structure:
 [
