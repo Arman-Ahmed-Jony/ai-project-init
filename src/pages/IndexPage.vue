@@ -1,142 +1,212 @@
 <template>
   <q-page class="landing-page">
     <!-- Hero Section -->
-    <div class="hero-section">
+    <section class="hero-section">
+      <div class="hero-background">
+        <div class="flying-plane" :class="{ animate: planeAnimated }">✈️</div>
+        <div class="floating-nodes">
+          <div class="node node-1" :class="{ animate: nodesAnimated }">📊</div>
+          <div class="node node-2" :class="{ animate: nodesAnimated }">🌳</div>
+          <div class="node node-3" :class="{ animate: nodesAnimated }">⚡</div>
+          <div class="node node-4" :class="{ animate: nodesAnimated }">🎯</div>
+        </div>
+      </div>
+
       <div class="hero-content">
-        <!-- Animated Logo -->
-        <div class="logo-container">
-          <q-icon
-            name="build"
-            size="6rem"
-            color="primary"
-            class="animated-logo"
-            :class="{ bounce: logoBounce }"
-          />
-          <div class="sparkle sparkle-1">✨</div>
-          <div class="sparkle sparkle-2">⚡</div>
-          <div class="sparkle sparkle-3">🔥</div>
-        </div>
+        <div class="container">
+          <div class="hero-text" :class="{ 'fade-in': heroVisible }">
+            <h1 class="hero-title">
+              <span class="title-main">PlanPilot AI</span>
+              <span class="title-emoji">✈️</span>
+            </h1>
+            <p class="hero-subtitle">Navigate your project planning with AI</p>
+            <p class="hero-description">
+              AI-powered Agile project management tool that generates epics, features, user stories,
+              and tasks with just one click.
+            </p>
 
-        <!-- Main Title -->
-        <h1 class="hero-title">
-          <span class="title-main">PlanPilot AI</span>
-          <span class="title-emoji">✈️</span>
-        </h1>
+            <div class="hero-actions">
+              <q-btn
+                color="primary"
+                label="🚀 Try Live Demo"
+                icon="rocket_launch"
+                size="xl"
+                class="cta-button"
+                @click="goToDemo"
+                :class="{ pulse: buttonPulse }"
+              >
+                <q-tooltip>Experience PlanPilot AI in action</q-tooltip>
+              </q-btn>
 
-        <p class="hero-subtitle">
-          <span class="subtitle-highlight">Navigate your project planning with AI</span>
-        </p>
-
-        <p class="hero-description">
-          Transform your project ideas into structured, actionable tasks using the power of Google's
-          Gemini AI. Generate epics, features, user stories, and detailed tasks with beautiful
-          Mermaid workflow diagrams.
-        </p>
-
-        <!-- CTA Buttons -->
-        <div class="hero-actions">
-          <q-btn
-            color="primary"
-            label="Start Planning"
-            icon="flight_takeoff"
-            size="xl"
-            class="cta-button"
-            @click="goToAI"
-          >
-            <q-tooltip>Begin your AI-powered project journey</q-tooltip>
-          </q-btn>
-
-          <q-btn
-            outline
-            color="primary"
-            label="Watch Demo"
-            icon="play_circle"
-            size="lg"
-            class="demo-button"
-            @click="scrollToDemo"
-          />
-        </div>
-
-        <!-- Stats -->
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-number">20+</div>
-            <div class="stat-label">Features</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">AI</div>
-            <div class="stat-label">Powered</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Free</div>
+              <q-btn
+                outline
+                color="primary"
+                label="Watch Demo"
+                icon="play_circle"
+                size="lg"
+                class="demo-button"
+                @click="scrollToFeatures"
+              />
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Floating Elements -->
-      <div class="floating-elements">
-        <div class="floating-icon floating-1">📊</div>
-        <div class="floating-icon floating-2">🌳</div>
-        <div class="floating-icon floating-3">⚡</div>
-        <div class="floating-icon floating-4">🎯</div>
-        <div class="floating-icon floating-5">🚀</div>
-      </div>
-    </div>
+    </section>
 
     <!-- Features Section -->
-    <div class="features-section">
+    <section class="features-section" ref="featuresSection">
       <div class="container">
-        <h2 class="section-title">Why Choose PlanPilot AI?</h2>
+        <h2 class="section-title" :class="{ 'fade-in': featuresVisible }">
+          Why Choose PlanPilot AI?
+        </h2>
 
         <div class="features-grid">
-          <div class="feature-card" v-for="(feature, index) in features" :key="index">
-            <div class="feature-icon">
-              <q-icon :name="feature.icon" size="3rem" :color="feature.color" />
+          <div
+            v-for="(feature, index) in features"
+            :key="index"
+            class="feature-card"
+            :class="{ 'fade-in': featuresVisible }"
+            :style="{ 'animation-delay': `${index * 0.1}s` }"
+            @mouseenter="onFeatureHover(index)"
+            @mouseleave="onFeatureLeave(index)"
+          >
+            <div class="feature-icon" :class="{ glow: feature.hovered }">
+              <span class="feature-emoji">{{ feature.emoji }}</span>
             </div>
             <h3 class="feature-title">{{ feature.title }}</h3>
             <p class="feature-description">{{ feature.description }}</p>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- How It Works Section -->
-    <div class="how-it-works-section">
+    <!-- Comparison Section -->
+    <section class="comparison-section">
       <div class="container">
-        <h2 class="section-title">How It Works</h2>
+        <h2 class="section-title" :class="{ 'fade-in': comparisonVisible }">
+          PlanPilot AI vs Traditional Tools
+        </h2>
 
-        <div class="steps-container">
-          <div class="step-item" v-for="(step, index) in steps" :key="index">
-            <div class="step-number">{{ index + 1 }}</div>
-            <div class="step-content">
-              <h3 class="step-title">{{ step.title }}</h3>
-              <p class="step-description">{{ step.description }}</p>
+        <div class="comparison-table" :class="{ 'fade-in': comparisonVisible }">
+          <div class="comparison-header">
+            <div class="feature-column">Feature</div>
+            <div class="planpilot-column">PlanPilot AI</div>
+            <div class="traditional-column">Traditional Tools</div>
+          </div>
+
+          <div
+            v-for="(comparison, index) in comparisons"
+            :key="index"
+            class="comparison-row"
+            :class="{ 'fade-in': comparisonVisible }"
+            :style="{ 'animation-delay': `${index * 0.1}s` }"
+          >
+            <div class="feature-name">{{ comparison.feature }}</div>
+            <div class="planpilot-value">
+              <q-icon
+                :name="comparison.planpilot ? 'check_circle' : 'cancel'"
+                :color="comparison.planpilot ? 'positive' : 'negative'"
+                size="sm"
+              />
             </div>
-            <div class="step-arrow" v-if="index < steps.length - 1">→</div>
+            <div class="traditional-value">
+              <q-icon
+                :name="comparison.traditional ? 'check_circle' : 'cancel'"
+                :color="comparison.traditional ? 'positive' : 'negative'"
+                size="sm"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section class="tech-stack-section">
+      <div class="container">
+        <h2 class="section-title" :class="{ 'fade-in': techVisible }">
+          Built with Modern Technology
+        </h2>
+
+        <div class="tech-grid" :class="{ 'fade-in': techVisible }">
+          <div
+            v-for="(tech, index) in techStack"
+            :key="index"
+            class="tech-item"
+            :class="{ 'fade-in': techVisible }"
+            :style="{ 'animation-delay': `${index * 0.1}s` }"
+          >
+            <div class="tech-icon">{{ tech.icon }}</div>
+            <div class="tech-name">{{ tech.name }}</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- CTA Section -->
-    <div class="cta-section">
+    <section class="cta-section">
       <div class="container">
-        <h2 class="cta-title">Ready to Pilot Your Project?</h2>
-        <p class="cta-description">
-          Join thousands of developers who are already using PlanPilot AI to streamline their
-          project management.
-        </p>
-        <q-btn
-          color="primary"
-          label="Get Started Now"
-          icon="flight_takeoff"
-          size="xl"
-          class="cta-button-large"
-          @click="goToAI"
-        />
+        <div class="cta-content" :class="{ 'fade-in': ctaVisible }">
+          <h2 class="cta-title">Ready to fly through your projects?</h2>
+          <p class="cta-description">
+            Join thousands of developers who are already using PlanPilot AI to streamline their
+            project management.
+          </p>
+          <q-btn
+            color="primary"
+            label="✨ Start Planning with AI"
+            icon="flight_takeoff"
+            size="xl"
+            class="cta-button-large"
+            @click="goToAI"
+            :class="{ pulse: ctaPulse }"
+          />
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <h3>PlanPilot AI ✈️</h3>
+            <p>Navigate your project planning with AI</p>
+          </div>
+
+          <div class="footer-links">
+            <div class="link-group">
+              <h4>Product</h4>
+              <a href="https://arman-ahmed-jony.github.io/ai-project-init/" target="_blank"
+                >Live Demo</a
+              >
+              <a href="#" @click="scrollToFeatures">Features</a>
+              <a href="#" @click="scrollToTech">Tech Stack</a>
+            </div>
+
+            <div class="link-group">
+              <h4>Resources</h4>
+              <a href="https://github.com/Arman-Ahmed-Jony/ai-project-init" target="_blank"
+                >GitHub</a
+              >
+              <a href="#" @click="goToAI">Documentation</a>
+              <a href="#">License</a>
+            </div>
+
+            <div class="link-group">
+              <h4>Support</h4>
+              <a href="#">Help Center</a>
+              <a href="#">Contact</a>
+              <a href="#">Community</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>&copy; 2024 PlanPilot AI. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
   </q-page>
 </template>
 
@@ -147,105 +217,176 @@ import { useRouter } from 'vue-router';
 // Router for navigation
 const router = useRouter();
 
-// Landing page animations
-const logoBounce = ref(false);
+// Animation states
+const heroVisible = ref(false);
+const featuresVisible = ref(false);
+const comparisonVisible = ref(false);
+const techVisible = ref(false);
+const ctaVisible = ref(false);
+const planeAnimated = ref(false);
+const nodesAnimated = ref(false);
+const buttonPulse = ref(false);
+const ctaPulse = ref(false);
+
+// Section refs
+const featuresSection = ref<HTMLElement>();
 
 // Features data
 const features = ref([
   {
-    icon: 'psychology',
-    color: 'primary',
-    title: 'AI-Powered Generation',
+    emoji: '🤖',
+    title: 'AI-Powered Project Generation',
     description:
       "Generate complete project breakdowns using Google's Gemini AI with context-aware intelligence.",
+    hovered: false,
   },
   {
-    icon: 'account_tree',
-    color: 'secondary',
+    emoji: '📊',
     title: 'Visual Workflow Diagrams',
     description:
       'Create beautiful Mermaid diagrams that visualize task workflows and dependencies.',
+    hovered: false,
   },
   {
-    icon: 'drag_indicator',
-    color: 'accent',
-    title: 'Drag & Drop Management',
+    emoji: '🌳',
+    title: 'Advanced Tree Management',
     description:
       'Intuitively organize your project with collapsible tree views and drag-and-drop reordering.',
+    hovered: false,
   },
   {
-    icon: 'save',
-    color: 'positive',
-    title: 'Auto-Save & Export',
+    emoji: '💾',
+    title: 'Data Persistence & Export',
     description:
       'Never lose your work with automatic saving and comprehensive JSON export capabilities.',
+    hovered: false,
   },
   {
-    icon: 'speed',
-    color: 'warning',
-    title: 'Lightning Fast',
+    emoji: '🎨',
+    title: 'Modern User Experience',
     description: 'Built with Vue 3 and Vite for blazing-fast performance and smooth animations.',
+    hovered: false,
   },
   {
-    icon: 'devices',
-    color: 'info',
-    title: 'Responsive Design',
-    description: 'Works perfectly on desktop, tablet, and mobile devices with adaptive layouts.',
+    emoji: '⚡',
+    title: 'Lightning Fast',
+    description: 'Optimized for speed with modern web technologies and efficient rendering.',
+    hovered: false,
   },
 ]);
 
-// Steps data
-const steps = ref([
-  {
-    title: 'Enter Your Project',
-    description: 'Describe your project idea and let our AI understand your vision.',
-  },
-  {
-    title: 'AI Generates Epics',
-    description:
-      'Watch as AI creates high-level epics that break down your project into major components.',
-  },
-  {
-    title: 'Forge Features & Stories',
-    description:
-      'Generate detailed features and user stories with acceptance criteria for each epic.',
-  },
-  {
-    title: 'Create Task Workflows',
-    description:
-      'Get actionable tasks with beautiful Mermaid diagrams showing implementation workflows.',
-  },
-  {
-    title: 'Export & Share',
-    description: 'Download your complete project structure as JSON or share with your team.',
-  },
+// Comparison data
+const comparisons = ref([
+  { feature: 'AI-Powered Generation', planpilot: true, traditional: false },
+  { feature: 'Visual Workflow Diagrams', planpilot: true, traditional: false },
+  { feature: 'One-Click Project Setup', planpilot: true, traditional: false },
+  { feature: 'Automatic Data Persistence', planpilot: true, traditional: false },
+  { feature: 'Modern UI/UX', planpilot: true, traditional: false },
+  { feature: 'Free to Use', planpilot: true, traditional: false },
+  { feature: 'Manual Setup Required', planpilot: false, traditional: true },
+  { feature: 'Complex Configuration', planpilot: false, traditional: true },
+  { feature: 'Outdated Interface', planpilot: false, traditional: true },
 ]);
 
-// Landing page functions
-const scrollToDemo = () => {
-  const demoSection = document.querySelector('.features-section');
-  if (demoSection) {
-    demoSection.scrollIntoView({ behavior: 'smooth' });
+// Tech stack data
+const techStack = ref([
+  { icon: '⚛️', name: 'Vue 3' },
+  { icon: '🔷', name: 'Quasar' },
+  { icon: '🤖', name: 'Google Gemini' },
+  { icon: '📊', name: 'Mermaid' },
+  { icon: '📝', name: 'Markdown' },
+  { icon: '⚡', name: 'Vite' },
+  { icon: '🎨', name: 'TypeScript' },
+  { icon: '📱', name: 'Responsive' },
+]);
+
+// Navigation functions
+const goToDemo = () => {
+  window.open('https://arman-ahmed-jony.github.io/ai-project-init/', '_blank');
+};
+
+const goToAI = () => {
+  void router.push('/ai');
+};
+
+const scrollToFeatures = () => {
+  if (featuresSection.value) {
+    featuresSection.value.scrollIntoView({ behavior: 'smooth' });
   }
 };
 
-const goToAI = async () => {
-  await router.push('/ai');
+const scrollToTech = () => {
+  const techSection = document.querySelector('.tech-stack-section');
+  if (techSection) {
+    techSection.scrollIntoView({ behavior: 'smooth' });
+  }
 };
 
 // Animation functions
-const startLogoAnimation = () => {
+const onFeatureHover = (index: number) => {
+  if (features.value[index]) {
+    features.value[index].hovered = true;
+  }
+};
+
+const onFeatureLeave = (index: number) => {
+  if (features.value[index]) {
+    features.value[index].hovered = false;
+  }
+};
+
+// Intersection Observer for scroll animations
+const setupScrollAnimations = () => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const section = entry.target.className;
+          if (section.includes('hero')) heroVisible.value = true;
+          if (section.includes('features')) featuresVisible.value = true;
+          if (section.includes('comparison')) comparisonVisible.value = true;
+          if (section.includes('tech-stack')) techVisible.value = true;
+          if (section.includes('cta')) ctaVisible.value = true;
+        }
+      });
+    },
+    { threshold: 0.1 },
+  );
+
+  // Observe all sections
+  const sections = document.querySelectorAll('section');
+  sections.forEach((section) => observer.observe(section));
+};
+
+// Start animations
+const startAnimations = () => {
+  // Hero animations
+  setTimeout(() => {
+    heroVisible.value = true;
+    planeAnimated.value = true;
+    nodesAnimated.value = true;
+  }, 500);
+
+  // Button pulse animation
   setInterval(() => {
-    logoBounce.value = true;
+    buttonPulse.value = true;
     setTimeout(() => {
-      logoBounce.value = false;
+      buttonPulse.value = false;
     }, 1000);
   }, 3000);
+
+  // CTA pulse animation
+  setInterval(() => {
+    ctaPulse.value = true;
+    setTimeout(() => {
+      ctaPulse.value = false;
+    }, 1000);
+  }, 4000);
 };
 
 onMounted(() => {
-  // Start landing page animations
-  startLogoAnimation();
+  setupScrollAnimations();
+  startAnimations();
 });
 </script>
 
@@ -253,9 +394,15 @@ onMounted(() => {
 /* Landing Page Styles */
 .landing-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   position: relative;
   overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
 }
 
 /* Hero Section */
@@ -265,99 +412,108 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 2rem;
-  text-align: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  overflow: hidden;
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.flying-plane {
+  position: absolute;
+  top: 20%;
+  right: -100px;
+  font-size: 4rem;
+  opacity: 0;
+  transition: all 2s ease-in-out;
+}
+
+.flying-plane.animate {
+  opacity: 1;
+  transform: translateX(-200px);
+}
+
+.floating-nodes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.node {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0;
+  transition: all 1s ease-in-out;
+}
+
+.node-1 {
+  top: 15%;
+  left: 10%;
+}
+.node-2 {
+  top: 30%;
+  right: 15%;
+}
+.node-3 {
+  top: 60%;
+  left: 5%;
+}
+.node-4 {
+  top: 70%;
+  right: 10%;
+}
+
+.node.animate {
+  opacity: 0.7;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 .hero-content {
-  max-width: 800px;
+  position: relative;
   z-index: 2;
-  position: relative;
+  text-align: center;
+  width: 100%;
 }
 
-/* Animated Logo */
-.logo-container {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 2rem;
+.hero-text {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 1s ease-out;
 }
 
-.animated-logo {
-  transition: all 0.3s ease;
-  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+.hero-text.fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-.animated-logo.bounce {
-  animation: bounce 1s ease-in-out;
-}
-
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-20px);
-  }
-  60% {
-    transform: translateY(-10px);
-  }
-}
-
-.sparkle {
-  position: absolute;
-  font-size: 1.5rem;
-  animation: sparkle 2s infinite;
-}
-
-.sparkle-1 {
-  top: -10px;
-  left: -20px;
-  animation-delay: 0s;
-}
-
-.sparkle-2 {
-  top: 20px;
-  right: -15px;
-  animation-delay: 0.5s;
-}
-
-.sparkle-3 {
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation-delay: 1s;
-}
-
-@keyframes sparkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Hero Title */
 .hero-title {
-  font-size: 4rem;
-  font-weight: 700;
+  font-size: 4.5rem;
+  font-weight: 800;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  animation: fadeInUp 1s ease-out;
 }
 
 .title-main {
   display: inline-block;
-  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
-  background-size: 400% 400%;
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #ffffff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -365,9 +521,9 @@ onMounted(() => {
 }
 
 .title-emoji {
-  font-size: 3.5rem;
+  font-size: 4rem;
   margin-left: 0.5rem;
-  animation: rotate 2s linear infinite;
+  animation: rotate 4s linear infinite;
 }
 
 @keyframes gradientShift {
@@ -390,64 +546,62 @@ onMounted(() => {
 }
 
 .hero-subtitle {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin-bottom: 1rem;
-  animation: fadeInUp 1s ease-out 0.2s both;
-}
-
-.subtitle-highlight {
-  background: linear-gradient(45deg, #ffd700, #ffed4e);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
   font-weight: 600;
+  opacity: 0.9;
 }
 
 .hero-description {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.6;
   margin-bottom: 3rem;
-  opacity: 0.9;
-  animation: fadeInUp 1s ease-out 0.4s both;
+  opacity: 0.8;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Hero Actions */
 .hero-actions {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: center;
-  margin-bottom: 3rem;
-  animation: fadeInUp 1s ease-out 0.6s both;
+  flex-wrap: wrap;
 }
 
 .cta-button {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
+  padding: 1.2rem 2.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
   border-radius: 50px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
 }
 
 .cta-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.cta-button.pulse {
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .demo-button {
-  padding: 1rem 2rem;
-  font-size: 1rem;
+  padding: 1.2rem 2.5rem;
+  font-size: 1.1rem;
   border-radius: 50px;
   transition: all 0.3s ease;
 }
@@ -457,136 +611,51 @@ onMounted(() => {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Hero Stats */
-.hero-stats {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  animation: fadeInUp 1s ease-out 0.8s both;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #ffd700;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.stat-label {
-  font-size: 1rem;
-  opacity: 0.8;
-  margin-top: 0.5rem;
-}
-
-/* Floating Elements */
-.floating-elements {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.floating-icon {
-  position: absolute;
-  font-size: 2rem;
-  animation: float 6s ease-in-out infinite;
-}
-
-.floating-1 {
-  top: 20%;
-  left: 10%;
-  animation-delay: 0s;
-}
-
-.floating-2 {
-  top: 30%;
-  right: 15%;
-  animation-delay: 1s;
-}
-
-.floating-3 {
-  top: 60%;
-  left: 5%;
-  animation-delay: 2s;
-}
-
-.floating-4 {
-  top: 70%;
-  right: 10%;
-  animation-delay: 3s;
-}
-
-.floating-5 {
-  top: 40%;
-  left: 50%;
-  animation-delay: 4s;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-20px) rotate(180deg);
-  }
-}
-
 /* Features Section */
 .features-section {
-  padding: 5rem 2rem;
+  padding: 6rem 0;
   background: white;
-  position: relative;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .section-title {
   text-align: center;
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
-  margin-bottom: 3rem;
-  color: #2c3e50;
-  position: relative;
+  margin-bottom: 4rem;
+  color: #2d3748;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
 }
 
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  border-radius: 2px;
+.section-title.fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
   margin-top: 3rem;
 }
 
 .feature-card {
   background: white;
-  padding: 2rem;
-  border-radius: 15px;
+  padding: 2.5rem;
+  border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #e2e8f0;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.feature-card.fade-in {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .feature-card:hover {
@@ -595,124 +664,196 @@ onMounted(() => {
 }
 
 .feature-icon {
-  margin-bottom: 1.5rem;
-}
-
-.feature-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: #2c3e50;
-}
-
-.feature-description {
-  color: #7f8c8d;
-  line-height: 1.6;
-}
-
-/* How It Works Section */
-.how-it-works-section {
-  padding: 5rem 2rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-}
-
-.steps-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 3rem;
-}
-
-.step-item {
-  display: flex;
-  align-items: center;
-  background: white;
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  min-width: 250px;
-  max-width: 400px;
+  margin-bottom: 2rem;
   transition: all 0.3s ease;
 }
 
-.step-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+.feature-icon.glow {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
 }
 
-.step-number {
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-right: 1.5rem;
-  flex-shrink: 0;
+.feature-emoji {
+  font-size: 3.5rem;
+  display: block;
 }
 
-.step-content {
-  flex: 1;
-}
-
-.step-title {
-  font-size: 1.3rem;
+.feature-title {
+  font-size: 1.6rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: #2c3e50;
+  margin-bottom: 1rem;
+  color: #2d3748;
 }
 
-.step-description {
-  color: #7f8c8d;
-  line-height: 1.5;
+.feature-description {
+  color: #718096;
+  line-height: 1.6;
+  font-size: 1.1rem;
 }
 
-.step-arrow {
-  font-size: 2rem;
-  color: #667eea;
-  margin: 0 1rem;
-  animation: pulse 2s infinite;
+/* Comparison Section */
+.comparison-section {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
+.comparison-table {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.comparison-table.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.comparison-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 600;
+  padding: 1.5rem;
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: all 0.6s ease-out;
+}
+
+.comparison-row.fade-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.comparison-row:hover {
+  background-color: #f7fafc;
+}
+
+.comparison-row:last-child {
+  border-bottom: none;
+}
+
+.feature-name {
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.planpilot-column,
+.traditional-column {
+  text-align: center;
+  font-weight: 600;
+}
+
+.planpilot-value,
+.traditional-value {
+  text-align: center;
+}
+
+/* Tech Stack Section */
+.tech-stack-section {
+  padding: 6rem 0;
+  background: white;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.tech-grid.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tech-item {
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease-out;
+}
+
+.tech-item.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tech-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.tech-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.tech-name {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 1.1rem;
 }
 
 /* CTA Section */
 .cta-section {
-  padding: 5rem 2rem;
+  padding: 6rem 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   text-align: center;
   color: white;
 }
 
+.cta-content {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.cta-content.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .cta-title {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .cta-description {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   margin-bottom: 3rem;
   opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .cta-button-large {
   padding: 1.5rem 3rem;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   border-radius: 50px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
@@ -724,14 +865,72 @@ onMounted(() => {
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
+.cta-button-large.pulse {
+  animation: pulse 1s ease-in-out;
+}
+
+/* Footer */
+.footer {
+  background: #2d3748;
+  color: white;
+  padding: 3rem 0 1rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  margin-bottom: 2rem;
+}
+
+.footer-brand h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.footer-brand p {
+  opacity: 0.8;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.link-group h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #e2e8f0;
+}
+
+.link-group a {
+  display: block;
+  color: #a0aec0;
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.link-group a:hover {
+  color: white;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 2rem;
+  border-top: 1px solid #4a5568;
+  color: #a0aec0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-title {
-    font-size: 2.5rem;
+    font-size: 3rem;
   }
 
   .title-emoji {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 
   .hero-actions {
@@ -739,32 +938,27 @@ onMounted(() => {
     align-items: center;
   }
 
-  .hero-stats {
-    flex-direction: column;
-    gap: 1.5rem;
+  .features-grid {
+    grid-template-columns: 1fr;
   }
 
-  .steps-container {
-    flex-direction: column;
-  }
-
-  .step-item {
-    flex-direction: column;
+  .comparison-header,
+  .comparison-row {
+    grid-template-columns: 1fr;
     text-align: center;
   }
 
-  .step-number {
-    margin-right: 0;
-    margin-bottom: 1rem;
-  }
-
-  .step-arrow {
-    transform: rotate(90deg);
-    margin: 1rem 0;
-  }
-
-  .features-grid {
+  .footer-content {
     grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+  }
+
+  .tech-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   }
 }
 </style>

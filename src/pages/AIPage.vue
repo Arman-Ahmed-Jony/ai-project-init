@@ -11,13 +11,7 @@
             <p class="page-subtitle">Navigate your project planning with AI-powered intelligence</p>
           </div>
           <div class="header-right">
-            <q-btn
-              flat
-              color="primary"
-              label="Back to Home"
-              icon="home"
-              @click="goHome"
-            />
+            <q-btn flat color="primary" label="Back to Home" icon="home" @click="goHome" />
           </div>
         </div>
       </div>
@@ -206,14 +200,14 @@ const handleNodeGenerate = async (node: ProjectNode) => {
 
   try {
     const children = await generateChildrenForNode(node);
-    
+
     if (children.length > 0) {
       if (node.type === 'project') {
         projectNode.value = { ...projectNode.value, children };
       } else {
         updateNodeInTree(projectNode.value, { ...node, children });
       }
-      
+
       $q.notify({
         type: 'positive',
         message: `Generated ${children.length} ${getChildrenLabel(node.type)}`,
@@ -229,10 +223,10 @@ const handleNodeGenerate = async (node: ProjectNode) => {
     }
   } catch (error) {
     console.error('Error generating content:', error);
-    
+
     let errorMessage = 'Generation failed';
     let errorCaption = 'Unknown error occurred';
-    
+
     if (error instanceof Error) {
       if (error.message.includes('API key')) {
         errorMessage = 'API Key Required';
@@ -245,14 +239,17 @@ const handleNodeGenerate = async (node: ProjectNode) => {
         errorCaption = error.message;
       }
     }
-    
-    $q.notify({
+
+    const notifyOptions: any = {
       type: 'negative',
       message: errorMessage,
       caption: errorCaption,
       icon: 'error',
       timeout: 5000,
-      actions: errorMessage.includes('API key') ? [
+    };
+
+    if (errorMessage.includes('API key')) {
+      notifyOptions.actions = [
         {
           label: 'Get API Key',
           color: 'white',
@@ -260,8 +257,10 @@ const handleNodeGenerate = async (node: ProjectNode) => {
             window.open('https://makersuite.google.com/app/apikey', '_blank');
           },
         },
-      ] : undefined,
-    });
+      ];
+    }
+
+    $q.notify(notifyOptions);
   } finally {
     isGenerating.value = false;
     generatingNodeId.value = null;
@@ -358,7 +357,9 @@ const generateChildrenForNode = async (node: ProjectNode): Promise<ProjectNode[]
   try {
     geminiService.initialize(apiKey.value, selectedModel?.value || 'gemini-1.5-flash');
   } catch (error) {
-    throw new Error(`Failed to initialize Gemini service: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to initialize Gemini service: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    );
   }
 
   switch (node.type) {
