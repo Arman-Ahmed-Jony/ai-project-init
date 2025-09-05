@@ -6,6 +6,25 @@
           <q-tooltip>Toggle Sidebar</q-tooltip>
         </q-btn>
         <q-toolbar-title> TaskForge AI </q-toolbar-title>
+
+        <!-- Navigation -->
+        <div class="q-ml-auto">
+          <q-btn
+            flat
+            :color="$route.path === '/' ? 'white' : 'grey-3'"
+            label="Home"
+            icon="home"
+            @click="$router.push('/')"
+            class="q-mr-sm"
+          />
+          <q-btn
+            flat
+            :color="$route.path === '/ai' ? 'white' : 'grey-3'"
+            label="AI Tools"
+            icon="psychology"
+            @click="$router.push('/ai')"
+          />
+        </div>
       </q-toolbar>
     </q-header>
 
