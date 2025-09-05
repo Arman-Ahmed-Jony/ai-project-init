@@ -84,6 +84,7 @@ const generatingNodeId = ref<string | null>(null);
 
 // Inject API configuration from MainLayout
 const apiKey = inject<{ value: string }>('apiKey');
+const selectedModel = inject<{ value: string }>('selectedModel');
 
 // Load saved project from localStorage
 const loadProject = () => {
@@ -228,11 +229,38 @@ const handleNodeGenerate = async (node: ProjectNode) => {
     }
   } catch (error) {
     console.error('Error generating content:', error);
+    
+    let errorMessage = 'Generation failed';
+    let errorCaption = 'Unknown error occurred';
+    
+    if (error instanceof Error) {
+      if (error.message.includes('API key')) {
+        errorMessage = 'API Key Required';
+        errorCaption = 'Please enter your Gemini API key in the sidebar to generate content';
+      } else if (error.message.includes('Invalid API key')) {
+        errorMessage = 'Invalid API Key';
+        errorCaption = 'Please check your Gemini API key in the sidebar';
+      } else {
+        errorMessage = 'Generation Failed';
+        errorCaption = error.message;
+      }
+    }
+    
     $q.notify({
       type: 'negative',
-      message: 'Generation failed',
-      caption: error instanceof Error ? error.message : 'Unknown error occurred',
+      message: errorMessage,
+      caption: errorCaption,
       icon: 'error',
+      timeout: 5000,
+      actions: errorMessage.includes('API key') ? [
+        {
+          label: 'Get API Key',
+          color: 'white',
+          handler: () => {
+            window.open('https://makersuite.google.com/app/apikey', '_blank');
+          },
+        },
+      ] : undefined,
     });
   } finally {
     isGenerating.value = false;
@@ -322,6 +350,17 @@ const deleteNodeFromTree = (root: ProjectNode, nodeId: string): boolean => {
 };
 
 const generateChildrenForNode = async (node: ProjectNode): Promise<ProjectNode[]> => {
+  // Initialize Gemini service with API key and model
+  if (!apiKey?.value) {
+    throw new Error('API key is required. Please enter your Gemini API key in the sidebar.');
+  }
+
+  try {
+    geminiService.initialize(apiKey.value, selectedModel?.value || 'gemini-1.5-flash');
+  } catch (error) {
+    throw new Error(`Failed to initialize Gemini service: ${error instanceof Error ? error.message : 'Unknown error'}`);
+  }
+
   switch (node.type) {
     case 'project':
       return await geminiService.generateEpics(node);
