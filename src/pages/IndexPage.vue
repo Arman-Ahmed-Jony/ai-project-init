@@ -19,12 +19,12 @@
 
         <!-- Main Title -->
         <h1 class="hero-title">
-          <span class="title-main">TaskForge AI</span>
-          <span class="title-emoji">🔨</span>
+          <span class="title-main">PlanPilot AI</span>
+          <span class="title-emoji">✈️</span>
         </h1>
 
         <p class="hero-subtitle">
-          <span class="subtitle-highlight">Forge your project tasks with AI</span>
+          <span class="subtitle-highlight">Navigate your project planning with AI</span>
         </p>
 
         <p class="hero-description">
@@ -37,8 +37,8 @@
         <div class="hero-actions">
           <q-btn
             color="primary"
-            label="Start Forging Tasks"
-            icon="rocket_launch"
+            label="Start Planning"
+            icon="flight_takeoff"
             size="xl"
             class="cta-button"
             @click="goToAI"
@@ -87,7 +87,7 @@
     <!-- Features Section -->
     <div class="features-section">
       <div class="container">
-        <h2 class="section-title">Why Choose TaskForge AI?</h2>
+        <h2 class="section-title">Why Choose PlanPilot AI?</h2>
 
         <div class="features-grid">
           <div class="feature-card" v-for="(feature, index) in features" :key="index">
@@ -122,15 +122,15 @@
     <!-- CTA Section -->
     <div class="cta-section">
       <div class="container">
-        <h2 class="cta-title">Ready to Forge Your Project?</h2>
+        <h2 class="cta-title">Ready to Pilot Your Project?</h2>
         <p class="cta-description">
-          Join thousands of developers who are already using TaskForge AI to streamline their
+          Join thousands of developers who are already using PlanPilot AI to streamline their
           project management.
         </p>
         <q-btn
           color="primary"
           label="Get Started Now"
-          icon="rocket_launch"
+          icon="flight_takeoff"
           size="xl"
           class="cta-button-large"
           @click="goToAI"

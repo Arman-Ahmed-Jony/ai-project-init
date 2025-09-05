@@ -1,8 +1,8 @@
 {
-  "name": "taskforge-ai",
+  "name": "planpilot-ai",
   "version": "1.0.0",
-  "description": "TaskForge AI - Forge your project tasks with AI. AI-powered project management tool that uses Google's Gemini AI to automatically generate project breakdowns including epics, features, user stories, and tasks with Mermaid workflow diagrams.",
-  "productName": "TaskForge AI",
+  "description": "PlanPilot AI - Navigate your project planning with AI. AI-powered project management tool that uses Google's Gemini AI to automatically generate project breakdowns including epics, features, user stories, and tasks with Mermaid workflow diagrams.",
+  "productName": "PlanPilot AI",
   "author": "arman ahmed <arman.ahmed@itconquest.com>",
   "type": "module",
   "private": true,

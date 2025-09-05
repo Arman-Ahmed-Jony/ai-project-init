@@ -1,4 +1,4 @@
-# 🎉 TaskForge AI v1.0.0 Release
+# 🎉 PlanPilot AI v1.0.0 Release
 
 **Release Date**: December 19, 2024  
 **Version**: 1.0.0  
@@ -6,7 +6,7 @@
 
 ## 🚀 What's New
 
-We're excited to announce the first major release of **TaskForge AI 🔨** - a powerful project management tool that revolutionizes how you forge and organize project tasks using artificial intelligence.
+We're excited to announce the first major release of **PlanPilot AI ✈️** - a powerful project management tool that revolutionizes how you navigate and organize project planning using artificial intelligence.
 
 ### ✨ Key Highlights
 

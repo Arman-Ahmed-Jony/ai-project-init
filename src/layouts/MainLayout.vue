@@ -5,7 +5,7 @@
         <q-btn flat dense round icon="menu" class="q-mr-sm" @click="toggleLeftDrawer">
           <q-tooltip>Toggle Sidebar</q-tooltip>
         </q-btn>
-        <q-toolbar-title> TaskForge AI </q-toolbar-title>
+        <q-toolbar-title> PlanPilot AI </q-toolbar-title>
 
         <!-- Navigation -->
         <div class="q-ml-auto">

@@ -8,7 +8,7 @@
               <q-icon name="psychology" size="2rem" color="primary" class="q-mr-sm" />
               AI Project Management
             </h1>
-            <p class="page-subtitle">Forge your project tasks with AI-powered intelligence</p>
+            <p class="page-subtitle">Navigate your project planning with AI-powered intelligence</p>
           </div>
           <div class="header-right">
             <q-btn

@@ -3,8 +3,8 @@
     <!-- Simple header for landing page -->
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-toolbar-title> TaskForge AI 🔨 </q-toolbar-title>
-        
+        <q-toolbar-title> PlanPilot AI ✈️ </q-toolbar-title>
+
         <!-- Navigation -->
         <div class="q-ml-auto">
           <q-btn
