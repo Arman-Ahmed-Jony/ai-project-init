@@ -279,8 +279,8 @@ const comparisons = ref([
 
 // Tech stack data
 const techStack = ref([
-  { icon: '⚛️', name: 'Vue 3' },
-  { icon: '🔷', name: 'Quasar' },
+  { icon: '🔷', name: 'Vue 3' },
+  { icon: '🟢', name: 'Quasar' },
   { icon: '🤖', name: 'Google Gemini' },
   { icon: '📊', name: 'Mermaid' },
   { icon: '📝', name: 'Markdown' },
@@ -383,7 +383,7 @@ onMounted(() => {
 /* Landing Page Styles */
 .landing-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
   position: relative;
   overflow-x: hidden;
 }
@@ -401,7 +401,8 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
+
   color: white;
   overflow: hidden;
 }
@@ -683,7 +684,7 @@ onMounted(() => {
 /* Comparison Section */
 .comparison-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #fff5f0 0%, #fed7aa 100%);
+  background: linear-gradient(135deg, #fff5f0 0%, #7bf8a9 100%);
 }
 
 .comparison-table {
@@ -706,7 +707,7 @@ onMounted(() => {
 .comparison-header {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
   color: white;
   font-weight: 600;
   padding: 1.5rem;
@@ -809,7 +810,7 @@ onMounted(() => {
 /* CTA Section */
 .cta-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #22c55e 100%);
   text-align: center;
   color: white;
 }
