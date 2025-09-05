@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the AI Project Task Generator will be documented in this file.
+All notable changes to TaskForge AI will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🎉 Initial Release
 
-This is the first major release of the AI Project Task Generator, a comprehensive project management tool powered by Google's Gemini AI.
+This is the first major release of TaskForge AI 🔨, a comprehensive project management tool powered by Google's Gemini AI.
 
 ### ✨ Added
 

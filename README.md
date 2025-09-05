@@ -1,4 +1,6 @@
-# AI Project Task Generator
+# TaskForge AI 🔨
+
+**Forge your project tasks with AI**
 
 A powerful project management tool that uses Google's Gemini AI to automatically generate comprehensive project breakdowns including epics, features, user stories, and tasks. Built with Quasar Framework and Vue 3, featuring Mermaid diagram generation, collapsible tree views, and persistent data management.
 
@@ -94,12 +96,12 @@ Project
 
 ## ⚡ Quick Start
 
-**🌐 Try the Live Demo First**: [https://arman-ahmed-jony.github.io/ai-project-init/](https://arman-ahmed-jony.github.io/ai-project-init/)
+**🌐 Try TaskForge AI First**: [https://arman-ahmed-jony.github.io/ai-project-init/](https://arman-ahmed-jony.github.io/ai-project-init/)
 
 1. **Get API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey) to get your free Gemini API key
 2. **Configure**: Enter your API key in the sidebar and select a model
 3. **Create**: Click "Create New Project" and enter your project description
-4. **Generate**: Click the ✨ button to generate epics, then continue generating features, stories, and tasks
+4. **Forge**: Click the ✨ button to forge epics, then continue generating features, stories, and tasks
 5. **Manage**: Use collapse/expand, drag & drop, and inline editing to organize your project
 6. **Export**: Download your project as JSON for sharing or backup
 

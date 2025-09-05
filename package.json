@@ -1,8 +1,8 @@
 {
-  "name": "ai-project-task-generator",
+  "name": "taskforge-ai",
   "version": "1.0.0",
-  "description": "AI-powered project management tool that uses Google's Gemini AI to automatically generate project breakdowns including epics, features, user stories, and tasks with Mermaid workflow diagrams.",
-  "productName": "AI Project Task Generator",
+  "description": "TaskForge AI - Forge your project tasks with AI. AI-powered project management tool that uses Google's Gemini AI to automatically generate project breakdowns including epics, features, user stories, and tasks with Mermaid workflow diagrams.",
+  "productName": "TaskForge AI",
   "author": "arman ahmed <arman.ahmed@itconquest.com>",
   "type": "module",
   "private": true,
