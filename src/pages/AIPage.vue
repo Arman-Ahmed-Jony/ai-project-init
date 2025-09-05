@@ -240,27 +240,32 @@ const handleNodeGenerate = async (node: ProjectNode) => {
       }
     }
 
-    const notifyOptions: any = {
-      type: 'negative',
-      message: errorMessage,
-      caption: errorCaption,
-      icon: 'error',
-      timeout: 5000,
-    };
-
     if (errorMessage.includes('API key')) {
-      notifyOptions.actions = [
-        {
-          label: 'Get API Key',
-          color: 'white',
-          handler: () => {
-            window.open('https://makersuite.google.com/app/apikey', '_blank');
+      $q.notify({
+        type: 'negative',
+        message: errorMessage,
+        caption: errorCaption,
+        icon: 'error',
+        timeout: 5000,
+        actions: [
+          {
+            label: 'Get API Key',
+            color: 'white',
+            handler: () => {
+              window.open('https://makersuite.google.com/app/apikey', '_blank');
+            },
           },
-        },
-      ];
+        ],
+      });
+    } else {
+      $q.notify({
+        type: 'negative',
+        message: errorMessage,
+        caption: errorCaption,
+        icon: 'error',
+        timeout: 5000,
+      });
     }
-
-    $q.notify(notifyOptions);
   } finally {
     isGenerating.value = false;
     generatingNodeId.value = null;

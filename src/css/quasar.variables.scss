@@ -12,14 +12,17 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
+// 🎨 Primary Theme
+$primary: #4f46e5; // Indigo (luxury / trust)
+$secondary: #06b6d4; // Cyan (modern / AI glow)
+$accent: #f59e0b; // Golden Amber (premium highlight)
 
-$dark: #1d1d1d;
-$dark-page: #121212;
+// 🌑 Dark Mode Foundation
+$dark: #0f172a; // Deep Navy
+$dark-page: #020617; // Almost black
 
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+// ✅ Status Colors (refined)
+$positive: #22c55e; // Emerald Green
+$negative: #ef4444; // Soft Red
+$info: #3b82f6; // Bright Blue
+$warning: #facc15; // Warm Yellow

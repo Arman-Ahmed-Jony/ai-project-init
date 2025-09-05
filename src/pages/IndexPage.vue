@@ -177,9 +177,7 @@
           <div class="footer-links">
             <div class="link-group">
               <h4>Product</h4>
-              <a href="https://arman-ahmed-jony.github.io/ai-project-init/" target="_blank"
-                >Live Demo</a
-              >
+              <a href="https://arman-ahmed-jony.github.io/ai-project-init/ai">Live Demo</a>
               <a href="#" @click="scrollToFeatures">Features</a>
               <a href="#" @click="scrollToTech">Tech Stack</a>
             </div>
@@ -189,21 +187,12 @@
               <a href="https://github.com/Arman-Ahmed-Jony/ai-project-init" target="_blank"
                 >GitHub</a
               >
-              <a href="#" @click="goToAI">Documentation</a>
-              <a href="#">License</a>
-            </div>
-
-            <div class="link-group">
-              <h4>Support</h4>
-              <a href="#">Help Center</a>
-              <a href="#">Contact</a>
-              <a href="#">Community</a>
             </div>
           </div>
         </div>
 
         <div class="footer-bottom">
-          <p>&copy; 2024 PlanPilot AI. All rights reserved.</p>
+          <p>&copy; 2025 PlanPilot AI. All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -412,7 +401,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   color: white;
   overflow: hidden;
 }
@@ -694,7 +683,7 @@ onMounted(() => {
 /* Comparison Section */
 .comparison-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  background: linear-gradient(135deg, #fff5f0 0%, #fed7aa 100%);
 }
 
 .comparison-table {
@@ -717,7 +706,7 @@ onMounted(() => {
 .comparison-header {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   color: white;
   font-weight: 600;
   padding: 1.5rem;
@@ -820,7 +809,7 @@ onMounted(() => {
 /* CTA Section */
 .cta-section {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
   text-align: center;
   color: white;
 }

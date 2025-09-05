@@ -1,6 +1,6 @@
 # 🎉 PlanPilot AI v1.0.0 Release
 
-**Release Date**: December 19, 2024  
+**Release Date**: Sept 05, 2025
 **Version**: 1.0.0  
 **Type**: Initial Release
 
