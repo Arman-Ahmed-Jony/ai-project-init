@@ -84,7 +84,6 @@ const generatingNodeId = ref<string | null>(null);
 
 // Inject API configuration from MainLayout
 const apiKey = inject<{ value: string }>('apiKey');
-const selectedModel = inject<{ value: string }>('selectedModel');
 
 // Load saved project from localStorage
 const loadProject = () => {
@@ -124,7 +123,7 @@ const createProject = () => {
     message: 'Enter your project description:',
     prompt: {
       model: 'textarea',
-      isValid: (val: string) => val && val.length > 10,
+      isValid: (val: string) => Boolean(val && val.length > 10),
       placeholder: 'Describe your project idea...',
     },
     cancel: true,
@@ -136,7 +135,7 @@ const createProject = () => {
       title: 'New Project',
       description: data,
       children: [],
-      createdAt: new Date().toISOString(),
+      timestamp: Date.now(),
     };
 
     projectNode.value = newProject;
@@ -150,7 +149,7 @@ const createProject = () => {
 
 // Navigate to home
 const goHome = () => {
-  router.push('/');
+  void router.push('/');
 };
 
 // Update a node
@@ -251,7 +250,7 @@ const handleAddChild = (parentNode: ProjectNode) => {
     message: `Enter the ${childType} description:`,
     prompt: {
       model: 'textarea',
-      isValid: (val: string) => val && val.length > 5,
+      isValid: (val: string) => Boolean(val && val.length > 5),
       placeholder: `Describe the ${childType}...`,
     },
     cancel: true,
@@ -263,7 +262,7 @@ const handleAddChild = (parentNode: ProjectNode) => {
       title: `New ${childType.charAt(0).toUpperCase() + childType.slice(1)}`,
       description: data,
       children: [],
-      createdAt: new Date().toISOString(),
+      timestamp: Date.now(),
     };
 
     if (parentNode.type === 'project') {
